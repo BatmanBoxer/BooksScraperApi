@@ -1,7 +1,7 @@
 import express from 'express';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { baseSearchUrl, failed } from './constants.js';
+import { baseSearchUrl, failed, sucess } from './constants.js';
 import { sanitizeList } from './commons.js';
 
 const route = express.Router();
@@ -11,7 +11,7 @@ route.get('/', async (req, res) => {
   const query = req.query.q;
   if (query) {
     const list = await scrapeSearch(query);
-    res.json({ status: list })
+    res.json({ status: sucess,books:list })
   } else {
     res.json({ status: failed })
   }
@@ -26,7 +26,6 @@ const scrapeSearch = async (id) => {
     const books = $("#aarecord-list .flex.flex-col.justify-center")
     books.each((_, element) => {
       const searchJson = {
-        status: "",
         id: "",
         name: "",
         author: "",
@@ -44,7 +43,9 @@ const scrapeSearch = async (id) => {
       const author = $(element).find(".italic");
 
       searchJson.name = name.text()
-      searchJson.id = linkHref
+      if(typeof(linkHref)=="string"){
+      searchJson.id = linkHref.split("/")[2]
+      }
       searchJson.publication = publication.text()
       searchJson.author = author.text();
       searchJson.img = imgSrc
