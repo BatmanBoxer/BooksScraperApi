@@ -1,0 +1,21 @@
+{
+  "name": "booksscraperapi",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "this is a api that scrapes from annas archive ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "author": "BatmanBoxer",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cheerio": "^1.0.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
