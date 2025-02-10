@@ -6,14 +6,10 @@ const route = express.Router();
 
 route.get('/', async (req, res) => {
   try {
-    // Log the incoming request headers
     console.log('Incoming Request Headers:', req.headers);
-
-    // Extract headers from the incoming request
-
     const response = await axios.get(baseSearchUrl + "harry", {
       headers: {
-        'User-Agent': req.headers['user-agent'], // Forward the correct User-Agent
+        'User-Agent': req.headers['user-agent'],
       }
     });
 

@@ -8,6 +8,7 @@ const route = express.Router();
 route.get("/:id", async (req, res) => {
   const id = req.params.id;
   if (id) {
+    const user_agent = req.headers["user-agent"]
     const data = await scrapeDescription(id);
     res.json({ "status": sucess, data })
   } else {
@@ -15,14 +16,18 @@ route.get("/:id", async (req, res) => {
   }
 });
 
-const scrapeDescription = async (id) => {
+const scrapeDescription = async (id, user_agent) => {
   try {
     const data = {
       img: "",
       description: "",
       download: "",
     }
-    const request = await axios.get(baseDescriptionUrl + id);
+    const request = await axios.get(baseDescriptionUrl + id, {
+      headers: {
+        'User-Agent': user_agent,
+      }
+    });
     const html = request.data;
     const $ = cheerio.load(html);
 
@@ -41,25 +46,30 @@ const scrapeDescription = async (id) => {
       return false;
     });
     const a = $(filteredLi).find("a")
-
+    console.log(a.attr("href"))
     data.img = img.attr("src");
     data.description = bookDescription.text();
-    data.download = await scrapeDownloads(a.attr("href"))
+    data.download = await scrapeDownloads(a.attr("href"),user_agent)
     return data
   } catch (error) {
     return ({ "status": failed })
   }
 }
 
-const scrapeDownloads = async (url) => {
+const scrapeDownloads = async (url, user_agent) => {
   try {
-    const request = await axios.get("https://libgen.li/ads.php?md5=af56c54f230a2fc30c3474071bc4a0d9");
+    console.log("this is the url"+url)
+    const request = await axios.get(url, {
+      headers: {
+        'User-Agent': user_agent,
+      }
+    });
     const html = request.data;
     const $ = cheerio.load(html);
-    
+
     const td = $("td");
     const a = $(td).find("a");
-    return(downloadsBaseUrl+a.attr("href")) 
+    return (downloadsBaseUrl + a.attr("href"))
   } catch (error) {
     console.log(error)
     return failed

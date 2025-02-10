@@ -10,17 +10,23 @@ const route = express.Router();
 route.get('/', async (req, res) => {
   const query = req.query.q;
   if (query) {
-    const list = await scrapeSearch(query);
-    res.json({ status: sucess,books:list })
+    const user_agent = req.headers["user-agent"]
+    const list = await scrapeSearch(query,user_agent);
+    res.json({ status: sucess, books: list })
   } else {
     res.json({ status: failed })
   }
 });
 
-const scrapeSearch = async (id) => {
+const scrapeSearch = async (id, user_agent) => {
   const list = [];
   try {
-    const response = await axios.get(baseSearchUrl + id);
+    const response = await axios.get(baseSearchUrl + id, {
+      headers: {
+        'User-Agent': user_agent,
+      }
+    });
+
     const html = response.data;
     const $ = cheerio.load(html)
     const books = $("#aarecord-list .flex.flex-col.justify-center")
@@ -35,7 +41,7 @@ const scrapeSearch = async (id) => {
       const link = $(element).find("a.items-center");
       const linkHref = link.attr("href");
 
-      const img =  $(element).find("img.relative");
+      const img = $(element).find("img.relative");
       const imgSrc = img.attr("src");
 
       const name = $(element).find("h3");
@@ -43,8 +49,8 @@ const scrapeSearch = async (id) => {
       const author = $(element).find(".italic");
 
       searchJson.name = name.text()
-      if(typeof(linkHref)=="string"){
-      searchJson.id = linkHref.split("/")[2]
+      if (typeof (linkHref) == "string") {
+        searchJson.id = linkHref.split("/")[2]
       }
       searchJson.publication = publication.text()
       searchJson.author = author.text();
@@ -55,6 +61,7 @@ const scrapeSearch = async (id) => {
     const sanitizedList = sanitizeList(list)
     return sanitizedList;
   } catch (error) {
+    console.log(error)
     return ({ status: failed });
   }
 }
