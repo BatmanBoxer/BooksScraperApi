@@ -16,8 +16,7 @@ route.get('/', async (req, res) => {
     const data = response.data;
     res.json({ data: data });
   } catch (error) {
-    console.error('Axios Error:', error.response ? error.response.data : error.message);
-    res.json({ status: error.response ? error.response.data : error.message });
+    res.json({ status: error});
   }
 });
 export default route
