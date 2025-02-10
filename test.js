@@ -9,8 +9,9 @@ route.get('/', async (req, res) => {
     console.log('Incoming Request Headers:', req.headers);
     const response = await axios.get(baseSearchUrl + "harry", {
       headers: {
+        'Accept':'text/html',
         'User-Agent': req.headers['user-agent'],
-        'Referer': 'https://annas-archive.org/',  // or the page you're scraping from
+        'Referer': 'https://annas-archive.org/',
         'Origin': 'https://annas-archive.org/',
       }
     });
