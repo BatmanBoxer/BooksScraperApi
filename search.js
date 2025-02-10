@@ -18,20 +18,15 @@ route.get('/', async (req, res) => {
   }
 });
 
-const scrapeSearch = async (id) => {
+const scrapeSearch = async (id,user_agent) => {
   const list = [];
-  const user_agents = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
-  ];
-  const randomUserAgent = user_agents[Math.floor(Math.random() * user_agents.length)];
   try {
-    const response = await axios.get(baseSearchUrl + id, {
+     const response = await axios.get(baseSearchUrl + id, {
       headers: {
-        'User-Agent': randomUserAgent,
+        'User-Agent': req.headers['user-agent'],
       }
     });
+
 
     const html = response.data;
     const $ = cheerio.load(html)
