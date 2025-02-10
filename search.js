@@ -10,21 +10,17 @@ const route = express.Router();
 route.get('/', async (req, res) => {
   const query = req.query.q;
   if (query) {
-    const list = await scrapeSearch(query, req);
+    const list = await scrapeSearch(query);
     res.json({ status: sucess, books: list })
   } else {
     res.json({ status: failed })
   }
 });
 
-const scrapeSearch = async (id, req) => {
+const scrapeSearch = async (id) => {
   const list = [];
   try {
-    const response = await axios.get(baseSearchUrl + "harry", {
-      headers: {
-        'User-Agent': req.headers['user-agent'],
-      }
-    });
+    const response = await axios.get(baseSearchUrl + id);
     const html = response.data;
     const $ = cheerio.load(html)
     const books = $("#aarecord-list .flex.flex-col.justify-center")
