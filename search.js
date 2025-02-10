@@ -62,7 +62,7 @@ const scrapeSearch = async (id, user_agent) => {
     return sanitizedList;
   } catch (error) {
     console.log(error)
-    return ({ status: failed });
+    return ({ status: error });
   }
 }
 
