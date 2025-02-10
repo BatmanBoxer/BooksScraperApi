@@ -11,19 +11,25 @@ route.get('/', async (req, res) => {
   const query = req.query.q;
   if (query) {
     const user_agent = req.headers["user-agent"]
-    const list = await scrapeSearch(query,user_agent);
+    const list = await scrapeSearch(query, user_agent);
     res.json({ status: sucess, books: list })
   } else {
     res.json({ status: failed })
   }
 });
 
-const scrapeSearch = async (id, user_agent) => {
+const scrapeSearch = async (id) => {
   const list = [];
+  const user_agents = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36',
+  ];
+  const randomUserAgent = user_agents[Math.floor(Math.random() * user_agents.length)];
   try {
     const response = await axios.get(baseSearchUrl + id, {
       headers: {
-        'User-Agent': user_agent,
+        'User-Agent': randomUserAgent,
       }
     });
 
