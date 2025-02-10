@@ -1,3 +1,8 @@
+import express from "express"
+import { baseSearchUrl } from "./constants.js";
+import axios from 'axios';
+
+const route = express.Router();
 
 route.get('/', async (req, res) => {
   try {
@@ -19,4 +24,4 @@ route.get('/', async (req, res) => {
     res.json({ status: error.response ? error.response.data : error.message });
   }
 });
-
+export default route
