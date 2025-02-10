@@ -1,23 +1,22 @@
-import express from 'express';
-import axios from 'axios';
-import * as cheerio from 'cheerio';
-import { baseSearchUrl } from './constants.js';
-
-const route = express.Router();
-
 
 route.get('/', async (req, res) => {
-  try{
-     const request = await axios.get(baseSearchUrl + "harry", {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-      }
-    });    const data = request.data
-    res.json({ data:data })
-  }catch(error){
-    res.json({ status:error })
-  }
+  try {
+    // Log the incoming request headers
+    console.log('Incoming Request Headers:', req.headers);
 
+    // Extract headers from the incoming request
+
+    const response = await axios.get(baseSearchUrl + "harry", {
+      headers: {
+        'User-Agent': req.headers['user-agent'], // Forward the correct User-Agent
+      }
+    });
+
+    const data = response.data;
+    res.json({ data: data });
+  } catch (error) {
+    console.error('Axios Error:', error.response ? error.response.data : error.message);
+    res.json({ status: error.response ? error.response.data : error.message });
+  }
 });
 
-export default route
